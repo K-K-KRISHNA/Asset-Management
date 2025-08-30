@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import databaseConfig from './config/database.config';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -10,6 +11,7 @@ const ENV = process.env.NODE_ENV;
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
+      load: [databaseConfig],
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -17,13 +19,13 @@ const ENV = process.env.NODE_ENV;
         console.log('current Env: ', ENV ?? 'production');
         return {
           type: 'postgres',
-          host: config.get('DB_HOST'),
-          port: config.get<number>('DB_PORT'),
-          username: config.get('DB_USERNAME'),
-          password: config.get('DB_PASSWORD'),
-          database: config.get('DB_NAME'),
-          synchronize: config.get<boolean>('DB_SYNC'),
-          autoLoadEntities: config.get<boolean>('AUTO_LOAD'),
+          host: config.get('database.host'),
+          port: config.get<number>('database.port'),
+          username: config.get('database.username'),
+          password: config.get('database.password'),
+          database: config.get('database.databse'),
+          synchronize: config.get<boolean>('database.synchronize'),
+          autoLoadEntities: config.get<boolean>('database.autoLoadEntities'),
         };
       },
     }),
