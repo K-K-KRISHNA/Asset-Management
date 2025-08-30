@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
+import { envValidator } from './config/env.validtator';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -12,6 +13,7 @@ const ENV = process.env.NODE_ENV;
       isGlobal: true,
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
       load: [databaseConfig],
+      validationSchema: envValidator,
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
