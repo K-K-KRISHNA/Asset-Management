@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import databaseConfig from './config/database.config';
 import { envValidator } from './config/env.validtator';
+import { RolesModule } from './roles/roles.module';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -25,12 +26,13 @@ const ENV = process.env.NODE_ENV;
           port: config.get<number>('database.port'),
           username: config.get('database.username'),
           password: config.get('database.password'),
-          database: config.get('database.databse'),
+          database: config.get('database.database'),
           synchronize: config.get<boolean>('database.synchronize'),
           autoLoadEntities: config.get<boolean>('database.autoLoadEntities'),
         };
       },
     }),
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
