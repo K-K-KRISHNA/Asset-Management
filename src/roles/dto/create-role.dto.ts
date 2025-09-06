@@ -2,7 +2,7 @@ import { IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateRoleDto {
   @IsString()
-  @MaxLength(20, {
+  @MaxLength(40, {
     message: 'Role Name should not cross 20 characters',
   })
   name: string;
