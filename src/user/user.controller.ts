@@ -6,10 +6,12 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { GetAllUsersDto } from './dto/get-all-users.dto';
 
 @Controller('user')
 export class UserController {
@@ -21,8 +23,8 @@ export class UserController {
   }
 
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query() getAllUserDto: GetAllUsersDto) {
+    return this.userService.findAll(getAllUserDto);
   }
 
   @Get(':id')

@@ -1,3 +1,4 @@
+import { PaginatedResponse } from './../common/pagination/paginated-response';
 // users.service.ts
 import {
   ConflictException,
@@ -6,7 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, FindOptionsWhere } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PersonalInfo } from './entities/personal-info.entity';
@@ -14,10 +15,13 @@ import { EmploymentInfo } from './entities/employment-info.entity';
 import { Role } from '../roles/entities/role.entity';
 import { plainToInstance } from 'class-transformer';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PaginationService } from 'src/common/pagination/pagination.service';
+import { GetAllUsersDto } from './dto/get-all-users.dto';
 
 @Injectable()
 export class UserService {
   constructor(
+    private readonly pagiantionService: PaginationService,
     private readonly dataSource: DataSource,
     @InjectRepository(User) private readonly usersRepo: Repository<User>,
     @InjectRepository(PersonalInfo)
@@ -229,11 +233,32 @@ export class UserService {
    * @throws {NotFoundException} If no users are found
    * @throws {InternalServerErrorException} If DB query fails
    */
-  async findAll(): Promise<User[]> {
+  async findAll(
+    getAllUsersDto: GetAllUsersDto,
+  ): Promise<PaginatedResponse<User>> {
+    const {
+      // pageNumber = 1,
+      // perPage = 5,
+      // sendAll = false,
+      roleId,
+    } = getAllUsersDto;
+    let where: FindOptionsWhere<User> = {};
+    if (roleId) {
+      where = {
+        ...where,
+        employmentInfo: {
+          designation: { id: roleId },
+        },
+      };
+    }
     try {
-      const users = await this.usersRepo.find();
+      const users = await this.pagiantionService.paginateQuery(
+        getAllUsersDto,
+        this.usersRepo,
+        where,
+      );
 
-      if (!users || users.length === 0) {
+      if (!users.data || users.data.length === 0) {
         throw new NotFoundException('No users found');
       }
 

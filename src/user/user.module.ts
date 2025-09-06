@@ -6,12 +6,14 @@ import { User } from './entities/user.entity';
 import { PersonalInfo } from './entities/personal-info.entity';
 import { EmploymentInfo } from './entities/employment-info.entity';
 import { Role } from 'src/roles/entities/role.entity';
+import { PaginationModule } from 'src/common/pagination/pagination.module';
 
 @Module({
   controllers: [UserController],
   providers: [UserService],
   imports: [
     TypeOrmModule.forFeature([User, PersonalInfo, EmploymentInfo, Role]),
+    PaginationModule,
   ],
 })
 export class UserModule {}
