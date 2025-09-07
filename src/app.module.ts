@@ -8,6 +8,11 @@ import { envValidator } from './config/env.validtator';
 import { RolesModule } from './roles/roles.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthorizeGuard } from './auth/guards/authorize.guard';
+import authConfig from './auth/config/auth.config';
+import { PaginationModule } from './common/pagination/pagination.module';
+import { JwtModule } from '@nestjs/jwt';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -15,10 +20,11 @@ const ENV = process.env.NODE_ENV;
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
-      load: [databaseConfig],
+      load: [databaseConfig, authConfig],
       validationSchema: envValidator,
     }),
     TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         console.log('current Env: ', ENV ?? 'production');
@@ -37,8 +43,16 @@ const ENV = process.env.NODE_ENV;
     RolesModule,
     UserModule,
     AuthModule,
+    PaginationModule,
+    JwtModule.registerAsync(authConfig.asProvider()),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthorizeGuard,
+    },
+  ],
 })
 export class AppModule {}

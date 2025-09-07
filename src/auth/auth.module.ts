@@ -17,7 +17,7 @@ import { ConfigModule } from '@nestjs/config';
       useClass: BcryptProvider,
     },
   ],
-  exports: [AuthService, HashingProvider],
+  exports: [AuthService, HashingProvider, JwtModule],
   imports: [
     forwardRef(() => UserModule),
     ConfigModule.forFeature(authConfig),
