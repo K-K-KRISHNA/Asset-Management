@@ -10,4 +10,9 @@ export const envValidator = Joi.object({
   DB_NAME: Joi.string().required(),
   DB_SYNC: Joi.boolean().default(true),
   AUTO_LOAD: Joi.boolean().default(true),
+  // Auth Specific
+  JWT_TOKEN_SECRET: Joi.string().min(10).required(), // secret should not be too short
+  JWT_TOKEN_EXPIRESIN: Joi.number().positive().required(), // must be > 0
+  JWT_TOKEN_AUDIENCE: Joi.string().uri().required(),
+  JWT_TOKEN_ISSUER: Joi.string().uri().required(),
 });
