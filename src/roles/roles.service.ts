@@ -9,12 +9,17 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { Repository } from 'typeorm';
 import { Role } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationService } from 'src/common/pagination/pagination.service';
+import { PaginationQueryDTO } from 'src/common/pagination/dtos/pagination-query.dto';
+import { GetAllRolesDto } from './dto/get-all-roles.dto';
+import { PaginatedResponse } from 'src/common/pagination/paginated-response';
 
 @Injectable()
 export class RolesService {
   constructor(
     @InjectRepository(Role)
     private readonly rolesRepo: Repository<Role>,
+    private readonly paginationService: PaginationService,
   ) {}
 
   /**
@@ -46,9 +51,16 @@ export class RolesService {
    * @returns {Promise<Role[]>} A list of role entities.
    * @throws {InternalServerErrorException} If a database error occurs while fetching roles.
    */
-  async findAll(): Promise<Role[]> {
+  async findAll(
+    getAllRolesDto: GetAllRolesDto,
+  ): Promise<PaginatedResponse<Role>> {
     try {
-      return await this.rolesRepo.find();
+      const roles = await this.paginationService.paginateQuery(
+        getAllRolesDto,
+        this.rolesRepo,
+      );
+      if (!roles.data) throw new NotFoundException('Roles Not Found');
+      return roles;
     } catch (error) {
       throw new InternalServerErrorException(
         `Failed to retrieve roles: ${error.message}`,
