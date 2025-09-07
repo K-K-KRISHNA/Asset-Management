@@ -7,6 +7,7 @@ import databaseConfig from './config/database.config';
 import { envValidator } from './config/env.validtator';
 import { RolesModule } from './roles/roles.module';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -35,6 +36,7 @@ const ENV = process.env.NODE_ENV;
     }),
     RolesModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

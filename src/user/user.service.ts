@@ -2,6 +2,8 @@ import { PaginatedResponse } from './../common/pagination/paginated-response';
 // users.service.ts
 import {
   ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -17,6 +19,7 @@ import { plainToInstance } from 'class-transformer';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationService } from 'src/common/pagination/pagination.service';
 import { GetAllUsersDto } from './dto/get-all-users.dto';
+import { HashingProvider } from 'src/auth/provider/hashing.provider';
 
 @Injectable()
 export class UserService {
@@ -29,6 +32,9 @@ export class UserService {
     @InjectRepository(EmploymentInfo)
     private readonly employmentRepo: Repository<EmploymentInfo>,
     @InjectRepository(Role) private readonly rolesRepo: Repository<Role>,
+
+    @Inject(forwardRef(() => HashingProvider))
+    private readonly hashingProvider: HashingProvider,
   ) {}
 
   /**
@@ -92,8 +98,9 @@ export class UserService {
       await queryRunner.manager.save(employment);
 
       // ✅ Create User
+      const hashedPassword = await this.hashingProvider.hashPassword(password);
       const user = queryRunner.manager.create(User, {
-        password,
+        password: hashedPassword,
         personalInfo: personal,
         employmentInfo: employment,
       });
