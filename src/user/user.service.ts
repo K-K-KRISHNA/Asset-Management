@@ -369,4 +369,20 @@ export class UserService {
       await queryRunner.release();
     }
   }
+
+  async getUserByEmpId(empId: number): Promise<User> {
+    try {
+      const user = await this.usersRepo.findOne({
+        where: { employmentInfo: { empId } },
+      });
+      if (!user)
+        throw new NotFoundException(`User Not found with the id: ${empId}`);
+      return user;
+    } catch (err) {
+      if (err instanceof NotFoundException) throw err;
+      throw new InternalServerErrorException(
+        'Something went Wrong While Fetching User with Emp ID',
+      );
+    }
+  }
 }
