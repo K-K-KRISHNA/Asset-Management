@@ -13,6 +13,7 @@ import { AuthorizeGuard } from './auth/guards/authorize.guard';
 import authConfig from './auth/config/auth.config';
 import { PaginationModule } from './common/pagination/pagination.module';
 import { JwtModule } from '@nestjs/jwt';
+import { SeedModule } from './seed/seed.module';
 
 const ENV = process.env.NODE_ENV;
 @Module({
@@ -40,10 +41,12 @@ const ENV = process.env.NODE_ENV;
         };
       },
     }),
+    // TypeOrmModule.forFeature([User, EmploymentInfo, PersonalInfo, Role]),
     RolesModule,
     UserModule,
     AuthModule,
     PaginationModule,
+    SeedModule,
     JwtModule.registerAsync(authConfig.asProvider()),
   ],
   controllers: [AppController],
