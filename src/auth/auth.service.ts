@@ -5,7 +5,6 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserService } from 'src/user/user.service';
 import { HashingProvider } from './provider/hashing.provider';
 import authConfig from './config/auth.config';
@@ -45,10 +44,8 @@ export class AuthService {
       { secret, expiresIn, issuer, audience },
     );
     return {
-      data: user,
+      user,
       token,
-      success: true,
-      message: 'Logged In Successfully',
     };
   }
 }
