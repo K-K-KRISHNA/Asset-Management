@@ -1,0 +1,66 @@
+{
+  // Format with Prettier every time you save
+  "editor.formatOnSave": true,
+
+  // Set Prettier as the default formatter for all file types
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Auto fix linting errors (ESLint + Prettier integration)
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+
+  // Show quick suggestions while typing
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+
+  // Control how imports are sorted/organized
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "javascript.preferences.importModuleSpecifier": "relative",
+
+  // Enable tab size = 2 spaces (common in FE projects)
+  "editor.tabSize": 2,
+
+  // Insert spaces instead of tabs (cleaner git diffs)
+  "editor.insertSpaces": true,
+
+  // Remove extra whitespace automatically
+  "files.trimTrailingWhitespace": true,
+
+  // Add newline at the end of every file (good for Git diffs & POSIX compliance)
+  "files.insertFinalNewline": true,
+
+  // Format only modified lines when possible (saves time in large files)
+  "editor.formatOnSaveMode": "modificationsIfAvailable",
+
+  // Show inline error messages (like ESLint issues) directly in the editor
+  "editor.inlineSuggest.enabled": true,
+
+  // Enable bracket pair colorization (better readability in nested JSX/TSX)
+  "editor.bracketPairColorization.enabled": true,
+
+  // Highlight the active indent guide (helps spot indentation issues)
+  "editor.guides.highlightActiveIndentation": true,
+
+  // Auto-close quotes, brackets, and tags
+  "editor.autoClosingBrackets": "always",
+  "editor.autoClosingQuotes": "always",
+  "editor.autoClosingDelete": "always",
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

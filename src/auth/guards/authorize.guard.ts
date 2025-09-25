@@ -5,12 +5,12 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import authConfig from '../config/auth.config';
 import { ConfigType } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
+import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { REQUEST_USER_KEY } from 'src/constants/constants';
+import authConfig from '../config/auth.config';
 
 @Injectable()
 export class AuthorizeGuard implements CanActivate {
@@ -43,7 +43,9 @@ export class AuthorizeGuard implements CanActivate {
       request[REQUEST_USER_KEY] = payload;
       return true;
     } catch (err: any) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        'Your token is invalid please login again',
+      );
     }
   }
 }
