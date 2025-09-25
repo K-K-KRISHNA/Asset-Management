@@ -1,12 +1,12 @@
 import { Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 import { Role } from 'src/roles/entities/role.entity';
+import { CreatePersonalInfoDto } from 'src/user/dto/create-personal-info.dto';
 import { EmploymentInfo } from 'src/user/entities/employment-info.entity';
 import { PersonalInfo } from 'src/user/entities/personal-info.entity';
 import { User } from 'src/user/entities/user.entity';
-import * as bcrypt from 'bcrypt';
-import { CreatePersonalInfoDto } from 'src/user/dto/create-personal-info.dto';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class SeedService implements OnApplicationBootstrap {
