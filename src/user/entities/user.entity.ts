@@ -31,6 +31,24 @@ export class User {
   })
   employmentInfo: EmploymentInfo;
 
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  resetOtp?: string;
+
+  @Column({
+    nullable: true,
+    type: 'timestamp',
+  })
+  resetExpiresAt: Date;
+
+  @Column({
+    type: 'varchar',
+    nullable: true,
+  })
+  resetToken: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

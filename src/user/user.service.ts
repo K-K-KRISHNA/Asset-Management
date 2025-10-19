@@ -9,17 +9,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource, FindOptionsWhere } from 'typeorm';
-import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { PersonalInfo } from './entities/personal-info.entity';
-import { EmploymentInfo } from './entities/employment-info.entity';
-import { Role } from '../roles/entities/role.entity';
 import { plainToInstance } from 'class-transformer';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { PaginationService } from 'src/common/pagination/pagination.service';
-import { GetAllUsersDto } from './dto/get-all-users.dto';
 import { HashingProvider } from 'src/auth/provider/hashing.provider';
+import { PaginationService } from 'src/common/pagination/pagination.service';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
+import { Role } from '../roles/entities/role.entity';
+import { CreateUserDto } from './dto/create-user.dto';
+import { GetAllUsersDto } from './dto/get-all-users.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { EmploymentInfo } from './entities/employment-info.entity';
+import { PersonalInfo } from './entities/personal-info.entity';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -168,7 +168,7 @@ export class UserService {
 
       // ✅ Update password if provided
       if (password) {
-        user.password = password;
+        user.password = await this.hashingProvider.hashPassword(password);
       }
 
       // ✅ Update PersonalInfo if provided
@@ -382,6 +382,50 @@ export class UserService {
       if (err instanceof NotFoundException) throw err;
       throw new InternalServerErrorException(
         'Something went Wrong While Fetching User with Emp ID',
+      );
+    }
+  }
+
+  async getUserByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.usersRepo.findOne({
+        where: [{ employmentInfo: { email } }],
+      });
+      if (!user)
+        throw new NotFoundException(`User Not found with the email: ${email}`);
+      return user;
+    } catch (err) {
+      if (err instanceof NotFoundException) throw err;
+      throw new InternalServerErrorException(
+        'Something went Wrong While Fetching User with Email',
+      );
+    }
+  }
+
+  async updateOtpDetails(email: string, otp: string, otpExpiry: Date) {
+    try {
+      const user = await this.getUserByEmail(email);
+      user.resetOtp = otp;
+      user.resetExpiresAt = otpExpiry;
+      await this.usersRepo.save(user);
+      return user;
+    } catch (err) {
+      if (err instanceof NotFoundException) throw err;
+      throw new InternalServerErrorException(
+        'Something went Wrong While Updating OTP details',
+      );
+    }
+  }
+
+  async storeResetToken(email: string, resetToken: string) {
+    try {
+      const user = await this.getUserByEmail(email);
+      user.resetToken = resetToken;
+      await this.usersRepo.save(user);
+    } catch (err) {
+      if (err instanceof NotFoundException) throw err;
+      throw new InternalServerErrorException(
+        'Something went Wrong While Marking OTP as Verified',
       );
     }
   }

@@ -49,7 +49,7 @@ export class PersonalInfo {
     enum: BLOOD_GROUPS,
     nullable: true,
   })
-  bloodGroup?: string;
+  bloodGroup?: BLOOD_GROUPS;
 
   @Column({ type: 'text', nullable: true })
   address?: string;
